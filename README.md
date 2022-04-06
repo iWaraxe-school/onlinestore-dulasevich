@@ -1,3 +1,5 @@
+New line added for the 1st task
+
 ## 0. Intro
 
 While going through this training you will develop console `online store`. Each next task will append some functionality or flexibility to it; 
