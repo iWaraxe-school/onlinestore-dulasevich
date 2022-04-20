@@ -8,7 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class StoreApp {
-    public static void main(String[] args) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    public static void main(String[] args) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         RandomStorePopulator r = new RandomStorePopulator();
         List<Category> list = r.fillStoreRandomly();
         Store s = new Store(list);
