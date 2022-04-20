@@ -15,7 +15,7 @@ public class RandomStorePopulator {
 
     Faker faker = new Faker();
 
-    public List<Category> populateCategories() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public List<Category> populateCategories() throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         Reflections reflections = new Reflections("by.issoft.domain");
         Set<Class<? extends Category>> subTypes = reflections.getSubTypesOf(Category.class);
         for (Class<? extends Category> cat : subTypes) {
