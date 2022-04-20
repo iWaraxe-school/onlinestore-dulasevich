@@ -19,6 +19,7 @@ public class XMLReader {
         String fileName = "C:\\TC - Java For Auto\\store\\src\\main\\resources\\config";
         XMLStreamReader xmlReader = XMLInputFactory.newInstance().
                 createXMLStreamReader(fileName, new FileInputStream(fileName));
+
         while (xmlReader.hasNext()){
             xmlReader.next();
             if(xmlReader.isStartElement()){
