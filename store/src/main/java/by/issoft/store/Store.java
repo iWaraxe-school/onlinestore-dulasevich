@@ -3,7 +3,7 @@ package by.issoft.store;
 import by.issoft.domain.Category;
 import java.util.List;
 
-public class Store {
+public class Store{
 
     private List<Category> categoryList;
 
@@ -13,10 +13,6 @@ public class Store {
 
     public List<Category> getCategoryList() {
         return categoryList;
-    }
-
-    public void setCategoryList(List<Category> categoryList) {
-        this.categoryList = categoryList;
     }
 
     @Override

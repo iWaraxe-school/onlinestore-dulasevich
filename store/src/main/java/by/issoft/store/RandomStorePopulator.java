@@ -29,7 +29,7 @@ public class RandomStorePopulator {
         for(Category c:categories){
             int categorySize = faker.number().numberBetween(1, 5);
             for(int i=0; i<categorySize; i++) {
-                Product p = new Product(faker.name().name(), faker.number().randomDouble(2, 1, 5),
+                Product p = new Product(faker.app().name(), faker.number().randomDouble(2, 1, 5),
                         faker.number().randomDouble(2, 1, 1000));
                 c.addProduct(p);
             }
