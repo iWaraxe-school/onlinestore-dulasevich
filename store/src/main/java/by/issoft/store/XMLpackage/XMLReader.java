@@ -10,7 +10,7 @@ import java.util.*;
 
 public class XMLReader {
 
-    public Map<String, String> readXML() throws FileNotFoundException, XMLStreamException {
+    public static Map<String, String> readXML() throws FileNotFoundException, XMLStreamException {
 
         Map<String, String> xmlDocSort = new LinkedHashMap<>();
         String productElement = null;
