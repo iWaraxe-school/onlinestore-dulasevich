@@ -22,6 +22,10 @@ public abstract class Category {
         products.add(p);
     }
 
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
     @Override
     public String toString() {
         return "Category: " +

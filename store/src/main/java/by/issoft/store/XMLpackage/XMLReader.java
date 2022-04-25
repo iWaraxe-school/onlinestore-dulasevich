@@ -1,35 +1,36 @@
 package by.issoft.store.XMLpackage;
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.*;
-
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class XMLReader {
 
-    public static Map<String, String> readXML() throws FileNotFoundException, XMLStreamException {
+    public static Map<String, String> readXML() throws ParserConfigurationException, IOException, SAXException {
+
+        String PATH = "store/src/main/resources/config";
 
         Map<String, String> xmlDocSort = new LinkedHashMap<>();
-        String productElement = null;
-        String order = null;
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document document = builder.parse(PATH);
 
-        String fileName = "C:\\TC - Java For Auto\\store\\src\\main\\resources\\config";
-        XMLStreamReader xmlReader = XMLInputFactory.newInstance().
-                createXMLStreamReader(fileName, new FileInputStream(fileName));
+        Node node = document.getElementsByTagName("sort").item(0);
+        NodeList sortOptions = node.getChildNodes();
 
-        while (xmlReader.hasNext()){
-            xmlReader.next();
-            if(xmlReader.isStartElement()){
-                productElement = xmlReader.getLocalName();
-            } else if(xmlReader.hasText() && xmlReader.getText().trim().length()>0){
-                order = xmlReader.getText();
-            } else if(order != null){
-                xmlDocSort.put(productElement, order);
+        for (int i = 0; i < sortOptions.getLength(); i++) {
+            if (sortOptions.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                xmlDocSort.put(sortOptions.item(i).getNodeName(), sortOptions.item(i).getTextContent());
             }
         }
         return xmlDocSort;
     }
 }
+
