@@ -1,8 +1,6 @@
 package by.issoft.domain;
 
-import java.util.Objects;
-
-public class Product {
+public class Product{
 
     private String name;
     private double rate;
@@ -29,8 +27,7 @@ public class Product {
         return "Product: " +
                 "name='" + name + '\'' +
                 ", rate=" + rate +
-                ", price=" + price +
-                '}';
+                ", price=" + price;
     }
 }
 
