@@ -1,85 +1,86 @@
 package by.issoft.store.XMLpackage;
 
+
 import by.issoft.domain.Category;
 import by.issoft.domain.Product;
 import by.issoft.store.Store;
-import javax.xml.stream.XMLStreamException;
-import java.io.FileNotFoundException;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
-
-import static by.issoft.store.XMLpackage.ProductElements.*;
 
 public class Comparator {
 
-    public static void sortStore(ProductElements element, Store store) throws XMLStreamException, FileNotFoundException {
+    public static void sortStore(String sortOption, Store store) throws ParserConfigurationException, IOException, SAXException {
+        Store shop = new Store(store.getCategoryList());
+        List<Category> categoryList = shop.getCategoryList();
+        for (Category cat : categoryList) {
+            List<Product> product = cat.getProducts();
+            cat.setProducts(sortXML(sortOption, product));
+        }
+        System.out.println(shop);
+    }
+
+    private static java.util.Comparator<Product> nameComparator(){
+        return java.util.Comparator.comparing(Product::getName);
+    }
+
+    private static java.util.Comparator<Product> priceComparator(){
+        return java.util.Comparator.comparing(Product::getPrice);
+    }
+
+    private static java.util.Comparator<Product> rateComparator(){
+        return java.util.Comparator.comparing(Product::getRate);
+    }
+
+    public static List<Product> sortXML(String sortOption, List<Product> list) throws ParserConfigurationException, IOException, SAXException {
+        Map<String, String> map = XMLReader.readXML();
+        List<Product> sortedProducts = new ArrayList<>(list);
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            switch (sortOption) {
+                case "name" -> {
+                    if(entry.getKey().equals(sortOption)){
+                        if (entry.getValue().equals("asc")) {
+                            sortedProducts.sort(nameComparator());
+                        } else if (entry.getValue().equals("desc")) {
+                            sortedProducts.sort(nameComparator().reversed());
+                        }
+                    }
+                }
+                case "price" -> {
+                    if(entry.getKey().equals(sortOption)){
+                        if (entry.getValue().equals("asc")) {
+                            sortedProducts.sort(priceComparator());
+                        } else if (entry.getValue().equals("desc")) {
+                            sortedProducts.sort(priceComparator().reversed());
+                        }
+                    }
+                }
+                case "rate" -> {
+                    if(entry.getKey().equals(sortOption)){
+                        if (entry.getValue().equals("asc")) {
+                            sortedProducts.sort(rateComparator());
+                        } else if (entry.getValue().equals("desc")) {
+                            sortedProducts.sort(rateComparator().reversed());
+                        }
+                    }
+                }
+            }
+        }
+        return sortedProducts;
+    }
+
+    public static List<Product> sortTop5Expensive(Store store){
         List<Category> categoryList = store.getCategoryList();
-            for(Category cat:categoryList) {
-                List<Product> product = cat.getProducts();
-                switch (element) {
-                    case NAME -> sortName(product);
-                    case PRICE -> sortPrice(product);
-                    case RATE -> sortRate(product);
-                }
-            }
-        System.out.println(categoryList);
-    }
-
-    public static List<Product> sortName(List<Product> list) throws XMLStreamException, FileNotFoundException {
-            Map<String, String> map= XMLReader.readXML();
-            for(Map.Entry<String, String> entry: map.entrySet()){
-                if(entry.getKey().equals("name")){
-                    if(entry.getValue().equals("asc")){
-                        list.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
-                    }
-                    else {
-                        list.sort((o1, o2) -> o2.getName().compareTo(o1.getName()));
-                    }
-                }
-            }
-        return list;
-    }
-
-    public static List<Product> sortPrice(List<Product> list) throws XMLStreamException, FileNotFoundException {
-        Map<String, String> map= XMLReader.readXML();
-        for(Map.Entry<String, String> entry: map.entrySet()){
-            if(entry.getKey().equals("price")){
-                if(entry.getValue().equals("asc")){
-                    list.sort((o1, o2) -> Double.compare(o1.getPrice(), o2.getPrice()));
-                }
-                else {
-                    list.sort((o1, o2) -> Double.compare(o2.getPrice(), o1.getPrice()));
-                }
-            }
+        List<Product> p = new ArrayList<>();
+        for (Category c:categoryList) {
+            p.addAll(c.getProducts());
+            p.sort(priceComparator().reversed());
         }
-        return list;
-    }
-
-    public static List<Product> sortRate(List<Product> list) throws XMLStreamException, FileNotFoundException {
-        Map<String, String> map= XMLReader.readXML();
-        for(Map.Entry<String, String> entry: map.entrySet()){
-            if(entry.getKey().equals("rate")){
-                if(entry.getValue().equals("asc")){
-                    list.sort((o1, o2) -> Double.compare(o1.getRate(), o2.getRate()));
-                }
-                else {
-                    list.sort((o1, o2) -> Double.compare(o2.getRate(), o1.getRate()));
-                }
-            }
-        }
-        return list;
-    }
-
-
-    public static ProductElements sortBasedOnEnum(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter how would you like to sort the store: by NAME, PRICE or RATE");
-        String s = scanner.nextLine();;
-        while(!(s.equals(NAME.toString()) || s.equals(PRICE.toString()) || s.equals(RATE.toString()))){
-            System.out.println("Sort option is either skipped or incorrect. Enter the new one:");
-            s = scanner.nextLine();
-        }
-        return ProductElements.valueOf(s);
+        System.out.println("Top 5 most expensive products are:");
+        return  p.subList(0, 5);
     }
 }
