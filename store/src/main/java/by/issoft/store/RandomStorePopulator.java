@@ -1,31 +1,34 @@
 package by.issoft.store;
 
+import by.issoft.domain.CategoryFactory;
 import by.issoft.domain.Category;
+import by.issoft.domain.CategoryType;
 import by.issoft.domain.Product;
+
 import com.github.javafaker.Faker;
-import org.reflections.Reflections;
-
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-
 
 public class RandomStorePopulator {
 
     List<Category> categories = new ArrayList<>();
-
     Faker faker = new Faker();
 
-    public List<Category> populateCategories() throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        Reflections reflections = new Reflections("by.issoft.domain");
-        Set<Class<? extends Category>> subTypes = reflections.getSubTypesOf(Category.class);
-        for (Class<? extends Category> cat : subTypes) {
-            categories.add(cat.getConstructor().newInstance());
-        }
+    //updating method which is adding categories to the store to use Factory instead of reflections
+    public List<Category> addCategories(){
+        CategoryFactory catFactory = new CategoryFactory();
+        Category book = catFactory.getCategories(CategoryType.BOOK);
+        Category phone = catFactory.getCategories(CategoryType.PHONE);
+        Category milk = catFactory.getCategories(CategoryType.MILK);
+
+        categories.add(book);
+        categories.add(phone);
+        categories.add(milk);
+
         return categories;
     }
 
-    public List<Category> fillStoreRandomly() throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
-        categories= populateCategories();
+    public List<Category> fillStoreRandomly(){
+        categories= addCategories();
         for(Category c:categories){
             int categorySize = faker.number().numberBetween(1, 5);
             for(int i=0; i<categorySize; i++) {
