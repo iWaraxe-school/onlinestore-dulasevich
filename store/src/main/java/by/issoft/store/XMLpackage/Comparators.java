@@ -1,6 +1,5 @@
 package by.issoft.store.XMLpackage;
 
-
 import by.issoft.domain.Category;
 import by.issoft.domain.Product;
 import by.issoft.store.Store;
@@ -9,31 +8,31 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-public class Comparator {
+public class Comparators{
 
     public static void sortStore(String sortOption, Store store) throws ParserConfigurationException, IOException, SAXException {
-        Store shop = new Store(store.getCategoryList());
-        List<Category> categoryList = shop.getCategoryList();
+        List<Category> categoryList = store.getCategoryList();
         for (Category cat : categoryList) {
             List<Product> product = cat.getProducts();
             cat.setProducts(sortXML(sortOption, product));
         }
-        System.out.println(shop);
+        System.out.println(store);
     }
 
-    private static java.util.Comparator<Product> nameComparator(){
-        return java.util.Comparator.comparing(Product::getName);
+    private static Comparator<Product> nameComparator(){
+        return Comparator.comparing(Product::getName);
     }
 
-    private static java.util.Comparator<Product> priceComparator(){
-        return java.util.Comparator.comparing(Product::getPrice);
+    private static Comparator<Product> priceComparator(){
+        return Comparator.comparing(Product::getPrice);
     }
 
-    private static java.util.Comparator<Product> rateComparator(){
-        return java.util.Comparator.comparing(Product::getRate);
+    private static Comparator<Product> rateComparator(){
+        return Comparator.comparing(Product::getRate);
     }
 
     public static List<Product> sortXML(String sortOption, List<Product> list) throws ParserConfigurationException, IOException, SAXException {
@@ -81,6 +80,11 @@ public class Comparator {
             p.sort(priceComparator().reversed());
         }
         System.out.println("Top 5 most expensive products are:");
-        return  p.subList(0, 5);
+        if (p.size() < 5) {
+            return p;
+        }
+        else {
+            return  p.subList(0, 5);
+        }
     }
 }
