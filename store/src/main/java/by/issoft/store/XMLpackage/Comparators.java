@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Comparators{
 
@@ -77,14 +78,12 @@ public class Comparators{
         List<Product> p = new ArrayList<>();
         for (Category c:categoryList) {
             p.addAll(c.getProducts());
-            p.sort(priceComparator().reversed());
         }
-        System.out.println("Top 5 most expensive products are:");
-        if (p.size() < 5) {
-            return p;
-        }
-        else {
-            return  p.subList(0, 5);
-        }
+        //updating method to show top 5 expensive products using Stream API
+        System.out.println("Top 5 expensive products are: ");
+        return p.stream()
+                .sorted(priceComparator().reversed())
+                .limit(5)
+                .collect(Collectors.toList());
     }
 }
