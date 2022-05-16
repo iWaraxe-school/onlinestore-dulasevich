@@ -1,5 +1,6 @@
 package by.issoft.store;
 
+import java.sql.SQLException;
 import java.util.concurrent.*;
 
 import static org.reflections.Reflections.log;
@@ -22,7 +23,13 @@ public class BasketThread implements Runnable {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Basket.addProductToBasket(StoreHelper.createStore());
+                try {
+                    Basket.addProductToBasket();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
                 log.info("Products in basket: " + Basket.getProductsInBasket());
                 isProductAdded = true;
             }
