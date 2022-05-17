@@ -1,11 +1,10 @@
 package by.issoft.store;
 
-import by.issoft.domain.CategoryFactory;
-import by.issoft.domain.Category;
-import by.issoft.domain.CategoryType;
-import by.issoft.domain.Product;
+import by.issoft.domain.*;
 
 import com.github.javafaker.Faker;
+
+import java.sql.SQLException;
 import java.util.*;
 
 public class RandomStorePopulator {
@@ -15,6 +14,7 @@ public class RandomStorePopulator {
 
     //updating method which is adding categories to the store to use Factory instead of reflections
     public List<Category> addCategories(){
+
         CategoryFactory catFactory = new CategoryFactory();
         Category book = catFactory.getCategories(CategoryType.BOOK);
         Category phone = catFactory.getCategories(CategoryType.PHONE);
@@ -28,6 +28,7 @@ public class RandomStorePopulator {
     }
 
     public List<Category> fillStoreRandomly(){
+
         categories= addCategories();
         for(Category c:categories){
             int categorySize = faker.number().numberBetween(1, 5);

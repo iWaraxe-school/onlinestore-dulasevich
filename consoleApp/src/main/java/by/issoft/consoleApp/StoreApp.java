@@ -1,24 +1,33 @@
 package by.issoft.consoleApp;
 
+import by.issoft.domain.CategoryType;
+import by.issoft.domain.DB;
 import by.issoft.store.*;
-import by.issoft.store.XMLpackage.Comparators;
 import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.SQLException;
 import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class StoreApp {
-    public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException, InterruptedException {
+    public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException, InterruptedException, SQLException, ClassNotFoundException {
 
         boolean occurrence = true;
 
         Timer timer = new Timer();
         timer.schedule(new CleanBasketThread(), 1000, 120000);
+
+        DB.createCategoryTable();
+        DB.createProductTable();
+        DB.addCategory(1, CategoryType.BOOK.name());
+        DB.addCategory(2, CategoryType.MILK.name());
+        DB.addCategory(3, CategoryType.PHONE.name());
+        DB.addProducts(10);
 
         while (occurrence){
 
@@ -46,10 +55,11 @@ public class StoreApp {
                         System.out.println("Sort option is either skipped or incorrect entered");
                         sortOption = storeReader.readLine();
                     }
-                    Comparators.sortStore(sortOption, StoreHelper.createStore());
+                    DB.sort(sortOption);
                 }
                 case "2" -> {
-                    System.out.println(Comparators.sortTop5Expensive(StoreHelper.createStore()));
+                    DB.top5();
+                    //System.out.println(Comparators.sortTop5Expensive(StoreHelper.createStore()));
                 }
                 case "3" -> {
                     ExecutorService executorService = Executors.newFixedThreadPool(2);
@@ -68,6 +78,8 @@ public class StoreApp {
                         closeOption = storeReader.readLine();
                     }
                     occurrence = false;
+                    DB.deleteProductsTable();
+                    DB.deleteCategoryTable();
                     timer.cancel();
                     storeReader.close();
                 }
