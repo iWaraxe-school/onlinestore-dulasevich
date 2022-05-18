@@ -1,10 +1,12 @@
 package by.issoft.store;
 
-import by.issoft.domain.Category;
+import by.issoft.domain.DB;
 import by.issoft.domain.Product;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Basket{
@@ -20,14 +22,24 @@ public class Basket{
         return "" + productsInBasket;
     }
 
-    public static List<Product> addProductToBasket(Store store){
-        List<Category> categoryList = store.getCategoryList();
+    public static List<Product> addProductToBasket() throws SQLException, ClassNotFoundException {
+//        List<Category> categoryList = store.getCategoryList();
+//
+//        Random rand = new Random();
+//        Category randomCategory = categoryList.get(rand.nextInt(categoryList.size()));
+//        int randomProduct = rand.nextInt(randomCategory.getProducts().size());
 
-        Random rand = new Random();
-        Category randomCategory = categoryList.get(rand.nextInt(categoryList.size()));
-        int randomProduct = rand.nextInt(randomCategory.getProducts().size());
+        Statement st = DB.getConnection().createStatement();
+        String sqlName = ("SELECT * FROM PRODUCTS ORDER BY RAND() LIMIT 1");
+        ResultSet rs = st.executeQuery(sqlName);
+        while(rs.next()) {
+            String name = rs.getString("name");
+            double rate = rs.getDouble("rate");
+            double price = rs.getDouble("price");
 
-        productsInBasket.add(randomCategory.getProducts().get(randomProduct));
+            Product p = new Product(name, rate, price);
+            productsInBasket.add(p);
+        }
         return productsInBasket;
     }
 
