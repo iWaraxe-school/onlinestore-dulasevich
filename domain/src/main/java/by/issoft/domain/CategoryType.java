@@ -4,5 +4,5 @@ public enum CategoryType {
 
     BOOK,
     MILK,
-    PHONE
+    PHONE;
 }
