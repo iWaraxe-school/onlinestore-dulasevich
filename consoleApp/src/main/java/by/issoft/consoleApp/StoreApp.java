@@ -3,6 +3,8 @@ package by.issoft.consoleApp;
 import by.issoft.domain.CategoryType;
 import by.issoft.domain.DB;
 import by.issoft.store.*;
+import by.issoft.store.HTTP.Client;
+import by.issoft.store.HTTP.Server;
 import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedReader;
@@ -29,24 +31,30 @@ public class StoreApp {
         DB.addCategory(3, CategoryType.PHONE.name());
         DB.addProducts(10);
 
+        Server.startServer();
+
         while (occurrence){
 
             BufferedReader storeReader = new BufferedReader(new InputStreamReader(System.in));
             System.out.println("Enter what would you like to do with the store: "  + '\n' +
-                    "1. Sort store" + '\n' +
-                    "2. Show top 5 expensive products" + '\n' +
-                    "3. Add random product to the basket" + '\n' +
-                    "4. Close the store");
+                    "1. Show store categories" + '\n' +
+                    "2. Sort store" + '\n' +
+                    "3. Show top 5 expensive products" + '\n' +
+                    "4. Add random product to the basket" + '\n' +
+                    "5. Close the store");
             String storeOption = storeReader.readLine();
 
             while (!(storeOption.equals("1") || storeOption.equals("2") || storeOption.equals("3")
-                    || storeOption.equals("4")) || storeOption.isEmpty()){
+                    || storeOption.equals("4") || storeOption.equals("5")) || storeOption.isEmpty()){
                 System.out.println("Store option is either skipped or incorrect entered");
                 storeOption = storeReader.readLine();
             }
 
             switch (storeOption){
                 case "1" -> {
+                    Client.getCategories();
+                }
+                case "2" -> {
                     System.out.println("Enter how would you like to sort the store - name, price or rate: ");
                     BufferedReader sortOptionReader = new BufferedReader(new InputStreamReader(System.in));
                     String sortOption = sortOptionReader.readLine();
@@ -57,11 +65,11 @@ public class StoreApp {
                     }
                     DB.sort(sortOption);
                 }
-                case "2" -> {
+                case "3" -> {
                     DB.top5();
                     //System.out.println(Comparators.sortTop5Expensive(StoreHelper.createStore()));
                 }
-                case "3" -> {
+                case "4" -> {
                     ExecutorService executorService = Executors.newFixedThreadPool(2);
 
                     BasketThread basketThread = new BasketThread();
@@ -69,8 +77,9 @@ public class StoreApp {
                     executorService.execute(basketThread);
                     executorService.awaitTermination(basketThread.getRandomNum() + 1, TimeUnit.SECONDS);
                     executorService.shutdown();
+                    Client.goToBasket();
                 }
-                case "4" -> {
+                case "5" -> {
                     System.out.println("Enter 'close' to quit the app: ");
                     String closeOption = storeReader.readLine();
                     while (!(closeOption.equals("close")) || closeOption.isEmpty()){
@@ -82,6 +91,7 @@ public class StoreApp {
                     DB.deleteCategoryTable();
                     timer.cancel();
                     storeReader.close();
+                    System.exit(130);
                 }
             }
         }

@@ -2,7 +2,6 @@ package by.issoft.store;
 
 import by.issoft.domain.Category;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class StoreHelper {
