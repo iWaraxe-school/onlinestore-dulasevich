@@ -26,10 +26,7 @@ public class Client {
         return connection;
     }
 
-    public static void getCategories() throws IOException {
-        String method = "GET";
-        String path = "/categories";
-
+    private static void readResponseBody(String method, String path) throws IOException {
         HttpURLConnection connection = getConnection(method, path);
         connection.setRequestMethod(method);
 
@@ -41,39 +38,26 @@ public class Client {
         in.close();
 
         connection.disconnect();
+    }
+
+    public static void getCategories() throws IOException {
+        String method = "GET";
+        String path = "/categories";
+
+        readResponseBody(method, path);
     }
 
     public static void goToBasket() throws IOException {
         String method = "GET";
         String path = "/basket";
 
-        HttpURLConnection connection = getConnection(method, path);
-        connection.setRequestMethod(method);
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        String inputLine;
-        while ((inputLine = in.readLine()) != null) {
-            System.out.println(inputLine);
-        }
-        in.close();
-
-        connection.disconnect();
+        readResponseBody(method, path);
     }
 
     public static void addProduct() throws IOException {
         String method = "POST";
         String path = "/addProduct";
 
-        HttpURLConnection connection = getConnection(method, path);
-        connection.setRequestMethod(method);
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        String inputLine;
-        while ((inputLine = in.readLine()) != null) {
-            System.out.println(inputLine);
-        }
-        in.close();
-
-        connection.disconnect();
+        readResponseBody(method, path);
     }
 }
